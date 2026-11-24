@@ -1,0 +1,302 @@
+
+using System;
+using System.Collections.Generic;
+
+enum CihazTuru{
+    Lamba,
+    Klima,
+    GuvenlikSistemi
+    
+}
+
+class Cihaz{
+    public int Kimlik{get; private set;}
+    public string Ad{get; private set;}
+    public CihazTuru Tur{get; private set;}
+    public bool AcikMi{get; private set;}
+
+
+    public Cihaz(int kimlik, string ad, CihazTuru tur){
+        Kimlik= kimlik;
+        Ad= ad;
+        Tur= tur;
+        AcikMi= false;
+    }
+
+    public void Ac(){
+        if (AcikMi==true){
+            return;
+        }
+        AcikMi=true;
+        Console.WriteLine($"{Ad} aciliyor");
+    }
+    public void Kapat(){
+        if(AcikMi==false){
+            return;
+        }
+        AcikMi=false;
+        Console.WriteLine($"{Ad} kapatiliyor");
+        
+    }
+    public void BilgileriGoster(){
+        string durum;
+        if (AcikMi==true){
+            durum="Açık";
+        }
+        else{
+            durum="Kapalı";
+        }
+        Console.WriteLine($"Kimlik: {Kimlik}, Ad: {Ad}, Tür: {Tur}, Durum: {durum}");
+    }
+}
+class Program
+{
+    static List<Cihaz> cihazlar = new List<Cihaz>();
+
+    static void Main(string[] args)
+    {
+        cihazlar.Add(new Cihaz(1, "XXX Lambası", CihazTuru.Lamba));
+        cihazlar.Add(new Cihaz(2, "XXX Kliması", CihazTuru.Klima));
+        cihazlar.Add(new Cihaz(3, "XXX Kamerası", CihazTuru.GuvenlikSistemi));
+
+        while (true)
+        {
+            Console.WriteLine("1-Cihazları Listele");
+            Console.WriteLine("2-Yeni Cihaz Ekle");
+            Console.WriteLine("3-Cihazı Aç");
+            Console.WriteLine("4-Cihazı Kapa");
+            Console.WriteLine("5-Çık");
+            Console.WriteLine("Seçim Yap");
+
+            string secim = Console.ReadLine();
+
+            Console.WriteLine();
+
+            switch (secim)
+            {
+                case "1":
+                    CihazlariListele(cihazlar);
+                    break;
+                case "2":
+                    YeniEkle(cihazlar);
+                    break;
+                case "3":
+                    AcKapa(cihazlar, true);
+                    break;
+                case "4":
+                    AcKapa(cihazlar, false);
+                    break;
+                case "5":
+                    Console.WriteLine("Çıkılıyor");
+                    return;
+                default:
+                    Console.WriteLine("Geçerli bir seçim yapınız.");
+                    break;
+            }
+        }
+    }
+
+    static void CihazlariListele(List<Cihaz> cihazlar)
+    {
+        if (cihazlar.Count == 0)
+        {
+            Console.WriteLine("Liste boş");
+            return;
+        }
+
+        Console.WriteLine("Cihazlar:");
+        foreach (Cihaz cihaz in cihazlar)
+        {
+            cihaz.BilgileriGoster();
+        }
+    }
+
+    static void YeniEkle(List<Cihaz> cihazlar)
+    {
+        int kimlik = int.Parse(Console.ReadLine());
+
+        bool kimlikVar = false;
+        foreach (Cihaz cihaz in cihazlar)
+        {
+            if (cihaz.Kimlik == kimlik)
+            {
+                kimlikVar = true;
+                break;
+            }
+        }
+
+        if (kimlikVar == true)
+        {
+            Console.WriteLine($"{kimlik} zaten mevcut");
+            return;
+        }
+
+        Console.Write("Cihaz Adı: ");
+        string ad = Console.ReadLine();
+
+        Console.Write("Cihaz Türü (1: Lamba, 2: Klima, 3: Güvenlik Sistemi): ");
+        int turSecim = int.Parse(Console.ReadLine());
+
+        CihazTuru secilenTur = (CihazTuru)(turSecim - 1);
+        Cihaz yeniCihaz = new Cihaz(kimlik, ad, secilenTur);
+        cihazlar.Add(yeniCihaz);
+
+        Console.WriteLine(ad + " eklendi.");
+    }
+
+    static void AcKapa(List<Cihaz> cihazlar, bool acmaistegi)
+    {
+        Console.Write("ID girinn: ");
+        int kimlik = int.Parse(Console.ReadLine());
+
+        Cihaz arananCihaz = null;
+        foreach (Cihaz cihaz in cihazlar)
+        {
+            if (cihaz.Kimlik == kimlik)
+            {
+                arananCihaz = cihaz;
+                break;
+            }
+        }
+
+        if (arananCihaz == null)
+        {
+            Console.WriteLine("Cihaz bulunamadı");
+            return;
+        }
+
+        if (acmaistegi == true)
+        {
+            arananCihaz.Ac();
+        }
+        else
+        {
+            arananCihaz.Kapat();
+        }
+    }
+}
+/*class Program{
+    static List<Cihaz> cihazlar = new List<Cihaz>();
+
+    static void Main(string[] args){
+        cihazlar.Add(new cihaz(1, "XXX Lambası", CihazTuru.Lamba));
+        cihazlar.Add(new Cihaz(2, "XXX Kliması", CihazTuru.Klima));
+        cihazlar.Add(new Cihaz(3,"XXX Kamerası", CihazTuru.GuvenlikSistemi));
+    };
+    while(true){
+        Console.WriteLine("1-Cihazları Listele");
+        Console.WriteLine("2-Yeni Cihaz Ekle");
+        Console.WriteLine("3-Cihazı Aç");
+        Console.WriteLine("4-Cihazı Kapa");   
+        Console.WriteLine("5-Çık");
+        Console.WriteLine("Seçim Yap");
+        
+        string secim = Console.ReadLine();
+
+        Console.WriteLine();
+
+        switch(secim){
+            case "1":
+                CihazlariListele(cihazlar);
+                break;
+            case "2":
+                YeniEkle(cihazlar);
+                break;
+             case "3":
+                CihaziAcKapa(cihazlar, true);
+                break;
+             case "4":
+                CihaziAcKapa(cihazlar, false);
+                 break;
+             case "5":
+                 Console.WriteLine("Çıkılıyor");
+                 return;
+             default:
+                 Console.WriteLine("Geçerli bir seçim yapınız.");
+                 break;   
+            
+        }
+    }
+}
+static void CihazlariListele(List<Cihaz> cihazlar)
+{
+    if (cihazlar.Count == 0)
+    {
+        Console.WriteLine("Liste boş");
+        return;
+    }
+
+    Console.WriteLine("Cihazlar:");
+    foreach (Cihaz cihaz in cihazlar)
+    {
+        cihaz.BilgileriGoster();
+    }
+}
+
+static void YeniEkle(List<Cihaz> cihazlar)
+{
+    int kimlik = int.Parse(Console.ReadLine());
+            
+    bool kimlikVar = false;
+    foreach (Cihaz cihaz in cihazlar)
+    {
+        if (cihaz.Kimlik == kimlik)
+        {
+            kimlikVar = true;
+            break;
+        }
+    }
+
+        if (kimlikVar == true)
+        {
+        
+            Console.WriteLine($"{kimlik} zaten mevcut");
+            return;
+        }
+
+ Console.Write("Cihaz Adı: ");
+ string ad = Console.ReadLine();
+
+Console.Write("Cihaz Türü (1: Lamba, 2: Klima, 3: Güvenlik Sistemi): ");
+int turSecim = int.Parse(Console.ReadLine());
+
+CihazTuru secilenTur = (CihazTuru)turSecim;
+Cihaz yeniCihaz = new Cihaz(kimlik, ad, secilenTur);
+cihazlar.Add(yeniCihaz);
+
+ Console.WriteLine(ad + " eklendi.");
+}
+
+ static void AcKapa(List<Cihaz> cihazlar, bool acmaistegi)
+{
+    Console.Write("ID girinn: ");
+    int kimlik = int.Parse(Console.ReadLine());
+
+    Cihaz arananCihaz = null;
+    foreach (Cihaz cihaz in cihazlar)
+    {
+        if (cihaz.Kimlik == kimlik)
+        {
+            arananCihaz = cihaz;
+            break;
+        }
+    }
+
+    if (arananCihaz == null)
+    {
+        Console.WriteLine("Cihaz bulunamadı");
+        return;
+    }
+
+    if (acmaistegi == true)
+    {
+        arananCihaz.Ac();
+    }
+    else
+    {
+        arananCihaz.Kapat();
+    }
+}
+*/
+
+
